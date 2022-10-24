@@ -3,6 +3,7 @@ import 'package:seven_learn_nick/data/product_entity.dart';
 import 'package:seven_learn_nick/data/repo/banner_repository.dart';
 import 'package:seven_learn_nick/data/repo/product_repository.dart';
 import 'package:seven_learn_nick/theme.dart';
+import 'package:seven_learn_nick/ui/home/home.dart';
 
 void main() {
   runApp(const MyApp());
@@ -53,7 +54,7 @@ class MyApp extends StatelessWidget {
             secondary: LightThemeColors.secondryColor,
             onSecondary: Colors.white,
           )),
-      home: const MyHomePage(title: 'فروشگاه نایک'),
+      home: HomeScreen(),
     );
   }
 }
