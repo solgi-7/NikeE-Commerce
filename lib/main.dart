@@ -45,8 +45,10 @@ class MyApp extends StatelessWidget {
           // is not restarted.
           primarySwatch: Colors.blue,
           textTheme: TextTheme(
+              subtitle1: defaultTextStyle.apply(color: LightThemeColors.secondryTextColor),
               bodyText2: defaultTextStyle,
-              headline6: defaultTextStyle.copyWith(fontWeight: FontWeight.bold),
+              button: defaultTextStyle,
+              headline6: defaultTextStyle.copyWith(fontWeight: FontWeight.bold,fontSize: 16),
               caption: defaultTextStyle.apply(
                   color: LightThemeColors.secondryTextColor)),
           colorScheme: const ColorScheme.light(

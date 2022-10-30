@@ -1,23 +1,21 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:seven_learn_nick/data/banner_entity.dart';
-import 'package:seven_learn_nick/data/repo/banner_repository.dart';
+import 'package:seven_learn_nick/common/exceptions.dart';
 import 'package:seven_learn_nick/data/repo/product_repository.dart';
-import 'package:seven_learn_nick/ui/widget/image.dart';
+import 'package:seven_learn_nick/data/repo/banner_repository.dart';
+import 'package:seven_learn_nick/data/product_entity.dart';
+import 'package:seven_learn_nick/ui/product/product.dart';
+import 'package:seven_learn_nick/ui/widget/error.dart';
 import 'package:seven_learn_nick/ui/widget/slider.dart';
-
+import 'package:seven_learn_nick/common/utils.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'bloc/home_bloc.dart';
 
 class HomeScreen extends StatelessWidget {
-  HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({Key? key}) : super(key: key);
 
-  Size? size;
   @override
   Widget build(BuildContext context) {
-    size = MediaQuery.of(context).size;
-    double height = size!.height;
-    double width = size!.width;
     return BlocProvider(
       create: (context) {
         final homeBloc = HomeBloc(
@@ -35,6 +33,7 @@ class HomeScreen extends StatelessWidget {
                 return ListView.builder(
                   itemCount: 5,
                   shrinkWrap: true,
+                  physics: defualtScrollPhysics,
                   itemBuilder: (BuildContext context, int index) {
                     switch (index) {
                       case 0:
@@ -47,9 +46,21 @@ class HomeScreen extends StatelessWidget {
                             fit: BoxFit.fitHeight,
                           ),
                         );
-                      case 1:
+                      case 2:
                         return BannerSlider(
                           banners: state.banners,
+                        );
+                      case 3:
+                        return _HorizontalProductList(
+                          onTap: () {},
+                          products: state.latestProducts,
+                          title: 'جدیدترین',
+                        );
+                      case 4:
+                        return _HorizontalProductList(
+                          onTap: () {},
+                          products: state.popularProducts,
+                          title: 'پربازدیدترین',
                         );
                       default:
                         return Container(
@@ -61,21 +72,11 @@ class HomeScreen extends StatelessWidget {
               } else if (state is HomeLoading) {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is HomeError) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(state.exception.message),
-                      ElevatedButton.icon(
-                          onPressed: () {
-                            BlocProvider.of<HomeBloc>(context)
-                                .add(HomeRefresh());
-                          },
-                          icon: const Icon(Icons.refresh),
-                          label: const Text('تلاش دوباره'))
-                    ],
-                  ),
+                return AppErrorWidget(
+                  exception: state.exception,
+                  onPressed: () {
+                    BlocProvider.of<HomeBloc>(context).add(HomeRefresh());
+                  },
                 );
               } else {
                 throw Exception('State is not supported');
@@ -84,6 +85,56 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+class _HorizontalProductList extends StatelessWidget {
+  final String title;
+  final GestureTapCallback onTap;
+  final List<ProductEntity> products;
+  const _HorizontalProductList({
+    Key? key,
+    required this.onTap,
+    required this.title,
+    required this.products,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TextButton(
+                onPressed: onTap,
+                child: const Text('مشاهدی همه'),
+              ),
+              Text(
+                title,
+                style: Theme.of(context).textTheme.subtitle1,
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 290,
+          child: ListView.builder(
+              itemCount: products.length,
+              physics: defualtScrollPhysics,
+              padding: const EdgeInsets.only(right: 8.0, left: 8.0),
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (BuildContext context, int index) {
+                final product = products[index];
+                return ProductItem(
+                  product: product,
+                  borderRadius: BorderRadius.circular(12.0),
+                );
+              }),
+        )
+      ],
     );
   }
 }

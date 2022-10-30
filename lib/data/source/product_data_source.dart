@@ -7,7 +7,7 @@ abstract class IProductDataSource {
   Future<List<ProductEntity>> search(String searchTerm);
 }
 
-class ProductRemoteDataSource with HttpResposeValidator implements IProductDataSource {
+class ProductRemoteDataSource with HttpResponseValidator implements IProductDataSource {
   final Dio httpClient ;
 
   ProductRemoteDataSource(this.httpClient);

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:seven_learn_nick/common/utils.dart';
 import 'package:seven_learn_nick/data/banner_entity.dart';
 import 'package:seven_learn_nick/ui/widget/image.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -17,7 +18,7 @@ class BannerSlider extends StatelessWidget {
           PageView.builder(
               controller: _controller,
               itemCount: banners.length,
-              physics: const BouncingScrollPhysics(),
+              physics: defualtScrollPhysics,
               itemBuilder: (BuildContext context, int index) {
                 return _Silde(banner: banners[index]);
               }),

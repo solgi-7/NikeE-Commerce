@@ -3,21 +3,27 @@ import 'package:flutter/material.dart';
 
 class ImageLoadingService extends StatelessWidget {
   final String imageUrl;
-  final BorderRadius borderRadius;
+  final BorderRadius? borderRadius;
   const ImageLoadingService({
     Key? key,
-    required this.borderRadius,
     required this.imageUrl,
+    this.borderRadius,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      child: CachedNetworkImage(
-        imageUrl: imageUrl,
-        fit: BoxFit.cover,
-      ),
-      borderRadius: borderRadius,
+    final Widget image = CachedNetworkImage(
+      imageUrl: imageUrl,
+      fit: BoxFit.cover,
     );
+
+    if (borderRadius != null) {
+      return ClipRRect(
+        child: image,
+        borderRadius: borderRadius,
+      );
+    } else {
+      return image;
+    }
   }
 }
