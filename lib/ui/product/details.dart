@@ -65,7 +65,9 @@ class ProductDetailScreen extends StatelessWidget {
                       height: 24,
                     ),
                     const Text(
-                        'این کتونی شدیدا برای دویدن و راه رفتن مناسب هست و تقریبا هیچ فشار مخربی  به پا و زانوان شما انتقال داده شود'),
+                      'این کتونی شدیدا برای دویدن و راه رفتن مناسب هست و تقریبا هیچ فشار مخربی  به پا و زانوان شما انتقال داده شود',
+                      style: TextStyle(height: 1.4),
+                    ),
                     const SizedBox(
                       height: 24,
                     ),
@@ -85,7 +87,6 @@ class ProductDetailScreen extends StatelessWidget {
               ),
             ),
             CommentList(productId: product.id),
-
           ],
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
