@@ -3,7 +3,9 @@ import 'package:seven_learn_nick/data/product_entity.dart';
 import 'package:seven_learn_nick/data/repo/banner_repository.dart';
 import 'package:seven_learn_nick/data/repo/product_repository.dart';
 import 'package:seven_learn_nick/theme.dart';
+import 'package:seven_learn_nick/ui/auth/auth.dart';
 import 'package:seven_learn_nick/ui/home/home.dart';
+import 'package:seven_learn_nick/ui/root.dart';
 
 void main() {
   runApp(const MyApp());
@@ -45,10 +47,12 @@ class MyApp extends StatelessWidget {
           // is not restarted.
           primarySwatch: Colors.blue,
           textTheme: TextTheme(
-              subtitle1: defaultTextStyle.apply(color: LightThemeColors.secondryTextColor),
+              subtitle1: defaultTextStyle.apply(
+                  color: LightThemeColors.secondryTextColor),
               bodyText2: defaultTextStyle,
               button: defaultTextStyle,
-              headline6: defaultTextStyle.copyWith(fontWeight: FontWeight.bold,fontSize: 16),
+              headline6: defaultTextStyle.copyWith(
+                  fontWeight: FontWeight.bold, fontSize: 16),
               caption: defaultTextStyle.apply(
                   color: LightThemeColors.secondryTextColor)),
           colorScheme: const ColorScheme.light(
@@ -56,7 +60,10 @@ class MyApp extends StatelessWidget {
             secondary: LightThemeColors.secondryColor,
             onSecondary: Colors.white,
           )),
-      home: HomeScreen(),
+      home: const Directionality(
+        textDirection: TextDirection.rtl,
+        child: AuthScreen(),
+        ),
     );
   }
 }

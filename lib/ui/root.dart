@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:seven_learn_nick/ui/home/home.dart';
 
@@ -47,16 +48,44 @@ class _RootScreenState extends State<RootScreen> {
     return WillPopScope(
       onWillPop: _onWillPOp,
       child: Scaffold(
-        body: const HomeScreen(),
+        body: IndexedStack(
+          index: selectedScreeniIndex,
+          children: [
+            _navigator(_homeKey, homeIndex, const HomeScreen()),
+            _navigator(_cartKey, cartIndex, const Center(child: Text('Cart'),),),
+            _navigator(_profileKey, profileIndex, const Center(child: Text('Profile'),),),
+          ],
+        ),
         bottomNavigationBar: BottomNavigationBar(
-          onTap: (selectIndex){
-            this.selectedScreeniIndex = selectIndex;
+          onTap: (selectIndex) {
+            setState(() {
+              _history.remove(selectedScreeniIndex);
+              _history.add(selectedScreeniIndex);
+               selectedScreeniIndex = selectIndex; 
+            });
           },
           currentIndex: selectedScreeniIndex,
-          items: [],
-
+          items: const [
+            BottomNavigationBarItem(icon: Icon(CupertinoIcons.home),label: 'خانه'),
+            BottomNavigationBarItem(icon: Icon(CupertinoIcons.cart),label: 'سبد خرید'),
+            BottomNavigationBarItem(icon: Icon(CupertinoIcons.person),label: 'پروفایل'),
+          ],
         ),
       ),
     );
+  }
+
+  Widget _navigator(GlobalKey key, int index, Widget child) {
+    return key.currentState == null && selectedScreeniIndex != index
+        ? const SizedBox()
+        : Navigator(
+            key: key,
+            onGenerateRoute: (settings) => MaterialPageRoute(
+              builder: (context) => Offstage(
+                offstage: selectedScreeniIndex != index,
+                child: child,
+              ),
+            ),
+          );
   }
 }
