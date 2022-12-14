@@ -4,7 +4,7 @@ import 'package:seven_learn_nick/data/repo/auth_reposityory.dart';
 import 'package:seven_learn_nick/data/repo/banner_repository.dart';
 import 'package:seven_learn_nick/data/repo/product_repository.dart';
 import 'package:seven_learn_nick/theme.dart';
-import 'package:seven_learn_nick/ui/auth/auth.dart';
+import 'package:seven_learn_nick/ui/root.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,6 +38,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
          primarySwatch: Colors.blue,
+         scaffoldBackgroundColor: Colors.white,
+         snackBarTheme: SnackBarThemeData(contentTextStyle: defaultTextStyle.apply(color: Colors.white)),
           textTheme: TextTheme(
               subtitle1: defaultTextStyle.apply(
                   color: LightThemeColors.secondryTextColor),
@@ -54,7 +56,7 @@ class MyApp extends StatelessWidget {
           )),
       home: const Directionality(
         textDirection: TextDirection.rtl,
-        child: AuthScreen(),
+        child: RootScreen(),
         ),
     );
   }

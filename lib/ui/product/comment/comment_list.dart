@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:seven_learn_nick/data/comment.dart';
 import 'package:seven_learn_nick/data/repo/comment_repository.dart';
-import 'package:seven_learn_nick/ui/comment/bloc/comment_list_bloc.dart';
-import 'package:seven_learn_nick/ui/comment/comment.dart';
+import 'package:seven_learn_nick/ui/product/comment/bloc/comment_list_bloc.dart';
+import 'package:seven_learn_nick/ui/product/comment/comment.dart';
 import 'package:seven_learn_nick/ui/widget/error.dart';
 
 class CommentList extends StatelessWidget {

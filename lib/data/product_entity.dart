@@ -18,6 +18,6 @@ class ProductEntity {
         title = json['title'],
         imageUrl = json['image'],
         price = json['price'],
-        priviousPrice = json['previous_price'] ?? json['price'],
+        priviousPrice = json['previous_price'] ?? json['price'] + json['discount'],
         discount = json['discount'];
 }

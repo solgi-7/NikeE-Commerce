@@ -41,7 +41,7 @@ class HomeScreen extends StatelessWidget {
                           height: 56,
                           alignment: Alignment.center,
                           child: Image.asset(
-                            'assets/images/nike_logo.png',
+                            'assets/img/nike_logo.png',
                             height: 32,
                             fit: BoxFit.fitHeight,
                           ),
