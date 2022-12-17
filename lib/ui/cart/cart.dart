@@ -1,13 +1,16 @@
+import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:seven_learn_nick/common/utils.dart';
-import 'package:seven_learn_nick/data/auth_info.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:seven_learn_nick/data/repo/auth_reposityory.dart';
 import 'package:seven_learn_nick/data/repo/cart_repository.dart';
 import 'package:seven_learn_nick/ui/auth/auth.dart';
 import 'package:seven_learn_nick/ui/cart/bloc/cart_bloc.dart';
-import 'package:seven_learn_nick/ui/widget/image.dart';
+import 'package:seven_learn_nick/ui/cart/cart_item.dart';
+import 'package:seven_learn_nick/ui/cart/price_info.dart';
+import 'package:seven_learn_nick/ui/widget/empty_state.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({Key? key}) : super(key: key);
@@ -17,14 +20,32 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
+  CartBloc? cartBloc;
+  StreamSubscription? stateStreamSubscription;
+  final RefreshController _refreshController = RefreshController();
+
   @override
   void initState() {
     super.initState();
+    AuthRepository.authChangeNotifier.addListener(authChangeNotifierListener);
+  }
+
+  void authChangeNotifierListener() => cartBloc!
+      .add(CartAuthInfoChanged(AuthRepository.authChangeNotifier.value));
+
+  @override
+  void dispose() {
+    AuthRepository.authChangeNotifier
+        .removeListener(authChangeNotifierListener);
+    cartBloc!.close();
+    stateStreamSubscription!.cancel();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.secondaryVariant,
         appBar: AppBar(
           centerTitle: true,
           title: const Text('سبد خرید'),
@@ -32,7 +53,17 @@ class _CartScreenState extends State<CartScreen> {
         body: BlocProvider(
           create: (context) {
             final bloc = CartBloc(cartRepository);
-            bloc.add(CartStarted());
+            stateStreamSubscription = bloc.stream.listen((state) {
+              if (_refreshController.isRefresh) {
+                if (state is CartSuccess) {
+                  _refreshController.refreshCompleted();
+                } else if (state is CartError) {
+                  _refreshController.refreshFailed();
+                }
+              }
+            });
+            cartBloc = bloc;
+            bloc.add(CartStarted(AuthRepository.authChangeNotifier.value));
             return bloc;
           },
           child: BlocBuilder<CartBloc, CartState>(
@@ -46,120 +77,75 @@ class _CartScreenState extends State<CartScreen> {
                   child: Text(state.exception.message),
                 );
               } else if (state is CartSuccess) {
-                return ListView.builder(
-                    itemCount: state.cartResponse.cartItems.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      final data = state.cartResponse.cartItems[index];
-                      return Container(
-                        margin: const EdgeInsets.all(4),
-                        decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.surface,
-                            borderRadius: BorderRadius.circular(8),
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black.withOpacity(0.05),
-                                  blurRadius: 10)
-                            ]),
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: [
-                                  SizedBox(
-                                    width: 100,
-                                    height: 100,
-                                    child: ImageLoadingService(
-                                      imageUrl: data.product.imageUrl,
-                                      borderRadius: BorderRadius.circular(4),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        data.product.title,
-                                        style: const TextStyle(fontSize: 16),
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text('تعداد'),
-                                      Row(
-                                        children: [
-                                          IconButton(
-                                            onPressed: () {},
-                                            icon: const Icon(
-                                                CupertinoIcons.plus_rectangle),
-                                          ),
-                                          Text(
-                                            data.count.toString(),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline6,
-                                          ),
-                                          IconButton(
-                                            onPressed: () {},
-                                            icon: const Icon(
-                                                CupertinoIcons.minus_rectangle),
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                  Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        data.product.priviousPrice
-                                            .withPriceLabel,
-                                        style: const TextStyle(
-                                            decoration:
-                                                TextDecoration.lineThrough),
-                                      ),
-                                      Text(
-                                        data.product.price.withPriceLabel,
-                                        style: const TextStyle(
-                                            decoration:
-                                                TextDecoration.lineThrough),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                            const Divider(
-                              height: 1,
-                            ),
-                            TextButton(
-                              onPressed: () {},
-                              child: Text('حذف از سبد خرید'),
-                            ),
-                          ],
-                        ),
-                      );
-                    });
+                return SmartRefresher(
+                  controller: _refreshController,
+                  header: const ClassicHeader(
+                    completeText: 'باموفقیت انجام شد',
+                    refreshingText: 'در حال به روزرسانی',
+                    idleText: 'برای به روزسانی پایین بکشید',
+                    releaseText: 'رها کنید',
+                    failedText: 'خطای نامشخص',
+                    spacing: 2,
+                    completeIcon: Icon(
+                      CupertinoIcons.checkmark_circle,
+                      color: Colors.grey,
+                      size: 20,
+                    ),
+                  ),
+                  onRefresh: () {
+                    cartBloc?.add(CartStarted(
+                        AuthRepository.authChangeNotifier.value,
+                        isRefreshing: true));
+                  },
+                  child: ListView.builder(
+                      itemCount: state.cartResponse.cartItems.length + 1,
+                      itemBuilder: (BuildContext context, int index) {
+                        if (index < state.cartResponse.cartItems.length) {
+                          final data = state.cartResponse.cartItems[index];
+                          return CartItem(
+                            data: data,
+                            onDeleteButtonClick: () {
+                              cartBloc!.add(CartDeleteButtonClicked(data.id));
+                            },
+                          );
+                        } else {
+                          return PriceInfo(
+                            payablePrice: state.cartResponse.payablePrice,
+                            totalPrice: state.cartResponse.totalPrice,
+                            shippingCost: state.cartResponse.shippingCost,
+                          );
+                        }
+                      }),
+                );
+              } else if (state is CartAuthRequired) {
+                return EmotyView(
+                    message:
+                        'برای مشاهده ی سبد خرید ابتدا وارد حساب کاربری خود شوید',
+                    callToAction: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  const AuthScreen()));
+                        },
+                        child: const Text('ورود به حساب کاربری')),
+                    image: SvgPicture.asset(
+                      'assets/img/auth_required.svg',
+                      width: 120,
+                    ));
+              } else if (state is CartEmpty) {
+                return EmotyView(
+                    message:
+                        'تاکنون هیچ محصولی به سبد خرید خود اضافه نکرده اید',
+                    image: SvgPicture.asset(
+                      'assets/img/empty_cart.svg',
+                      width: 200,
+                    ));
               } else {
-                throw Exception('current cart state is not valid..!');
+                throw Exception('Current Cart State Is Not Valid');
               }
             },
           ),
         )
-
         // ValueListenableBuilder<AuthInfo?>(
         //   valueListenable: AuthRepository.authChangeNotifier,
         //   builder: (context, authState, child) {
@@ -200,7 +186,6 @@ class _CartScreenState extends State<CartScreen> {
         //     );
         //   },
         // ),
-
         );
   }
 }

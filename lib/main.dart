@@ -37,9 +37,15 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-         primarySwatch: Colors.blue,
-         scaffoldBackgroundColor: Colors.white,
-         snackBarTheme: SnackBarThemeData(contentTextStyle: defaultTextStyle.apply(color: Colors.white)),
+          primarySwatch: Colors.blue,
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Colors.white,
+            foregroundColor: LightThemeColors.primeryColor,
+            elevation: 0,
+          ),
+          scaffoldBackgroundColor: Colors.white,
+          snackBarTheme: SnackBarThemeData(
+              contentTextStyle: defaultTextStyle.apply(color: Colors.white)),
           textTheme: TextTheme(
               subtitle1: defaultTextStyle.apply(
                   color: LightThemeColors.secondryTextColor),
@@ -53,11 +59,12 @@ class MyApp extends StatelessWidget {
             primary: LightThemeColors.primeryColor,
             secondary: LightThemeColors.secondryColor,
             onSecondary: Colors.white,
-          )),
+            secondaryVariant: Color(0xffF5F5F5),
+          ),),
       home: const Directionality(
         textDirection: TextDirection.rtl,
         child: RootScreen(),
-        ),
+      ),
     );
   }
 }
