@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:seven_learn_nick/data/repo/auth_reposityory.dart';
 import 'package:seven_learn_nick/ui/cart/cart.dart';
 import 'package:seven_learn_nick/ui/home/home.dart';
+import 'package:seven_learn_nick/ui/widget/badge.dart';
 
 const int homeIndex = 0;
 const int cartIndex = 1;
@@ -74,10 +75,18 @@ class _RootScreenState extends State<RootScreen> {
             });
           },
           currentIndex: selectedScreeniIndex,
-          items: const [
-            BottomNavigationBarItem(icon: Icon(CupertinoIcons.home),label: 'خانه'),
-            BottomNavigationBarItem(icon: Icon(CupertinoIcons.cart),label: 'سبد خرید'),
-            BottomNavigationBarItem(icon: Icon(CupertinoIcons.person),label: 'پروفایل'),
+          items: [
+            const BottomNavigationBarItem(icon: Icon(CupertinoIcons.home),label: 'خانه'),
+            BottomNavigationBarItem(icon: Stack(
+              clipBehavior: Clip.none,
+              children: const [
+                Icon(CupertinoIcons.cart),
+                Positioned(
+                  right: -10,
+                  child: Badge(value: 1)),
+              ],
+            ),label: 'سبد خرید'),
+            const BottomNavigationBarItem(icon: Icon(CupertinoIcons.person),label: 'پروفایل'),
           ],
         ),
       ),

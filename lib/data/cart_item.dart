@@ -5,8 +5,9 @@ import 'package:seven_learn_nick/data/product_entity.dart';
 class CartItemEntity {
   final ProductEntity product;
   final int id;
-  final int count;
+  int count;
   bool deleteButtonLoading = false;
+  bool changeCountLoading = false;
 
   CartItemEntity(this.product, this.id, this.count);
   CartItemEntity.formJson(Map<String, dynamic> json)

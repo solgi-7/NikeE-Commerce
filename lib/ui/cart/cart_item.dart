@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:seven_learn_nick/common/utils.dart';
 import 'package:seven_learn_nick/data/cart_item.dart';
+import 'package:seven_learn_nick/theme.dart';
 import 'package:seven_learn_nick/ui/widget/image.dart';
 
 class CartItem extends StatelessWidget {
@@ -9,10 +10,14 @@ class CartItem extends StatelessWidget {
     Key? key,
     required this.data,
     required this.onDeleteButtonClick,
+    required this.onIncreaseButtonClick,
+    required this.onDecreaseButtonClick,
   }) : super(key: key);
 
   final CartItemEntity data;
   final GestureTapCallback onDeleteButtonClick;
+  final GestureTapCallback onIncreaseButtonClick;
+  final GestureTapCallback onDecreaseButtonClick;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -61,15 +66,25 @@ class CartItem extends StatelessWidget {
                     Row(
                       children: [
                         IconButton(
-                          onPressed: () {},
+                          onPressed: onIncreaseButtonClick,
                           icon: const Icon(CupertinoIcons.plus_rectangle),
                         ),
-                        Text(
-                          data.count.toString(),
-                          style: Theme.of(context).textTheme.headline6,
-                        ),
+                        data.changeCountLoading
+                            ? SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onBackground,
+                                  strokeWidth: 2.0,
+                                ))
+                            : Text(
+                                data.count.toString(),
+                                style: Theme.of(context).textTheme.headline6,
+                              ),
                         IconButton(
-                          onPressed: () {},
+                          onPressed: onDecreaseButtonClick,
                           icon: const Icon(CupertinoIcons.minus_rectangle),
                         ),
                       ],
@@ -82,6 +97,8 @@ class CartItem extends StatelessWidget {
                     Text(
                       data.product.priviousPrice.withPriceLabel,
                       style: const TextStyle(
+                        fontSize: 12.0,
+                        color: LightThemeColors.secondryTextColor,
                           decoration: TextDecoration.lineThrough),
                     ),
                     Text(
