@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:seven_learn_nick/data/repo/auth_reposityory.dart';
+import 'package:seven_learn_nick/data/repo/cart_repository.dart';
 import 'package:seven_learn_nick/ui/cart/cart.dart';
 import 'package:seven_learn_nick/ui/home/home.dart';
 import 'package:seven_learn_nick/ui/widget/badge.dart';
@@ -30,6 +31,12 @@ class _RootScreenState extends State<RootScreen> {
     profileIndex: _profileKey
   };
 
+  @override
+  void initState() {
+    super.initState();
+    cartRepository.count();
+  }
+
   Future<bool> _onWillPOp() async {
     final NavigatorState currentSelectedTabNavigatorState =
         map[selectedScreeniIndex]!.currentState!;
@@ -56,14 +63,21 @@ class _RootScreenState extends State<RootScreen> {
           children: [
             _navigator(_homeKey, homeIndex, const HomeScreen()),
             _navigator(_cartKey, cartIndex, const CartScreen()),
-            _navigator(_profileKey, profileIndex, Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-              const Text('Profile'),
-              ElevatedButton(onPressed: (){
-                authRepository.signOut();
-              }, child: const Text('Sign Out')),
-            ],)),
+            _navigator(
+                _profileKey,
+                profileIndex,
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Profile'),
+                    ElevatedButton(
+                        onPressed: () {
+                          CartRepository.cartItemCountNotifier.value = 0;
+                          authRepository.signOut();
+                        },
+                        child: const Text('Sign Out')),
+                  ],
+                )),
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
@@ -71,22 +85,32 @@ class _RootScreenState extends State<RootScreen> {
             setState(() {
               _history.remove(selectedScreeniIndex);
               _history.add(selectedScreeniIndex);
-               selectedScreeniIndex = selectIndex; 
+              selectedScreeniIndex = selectIndex;
             });
           },
           currentIndex: selectedScreeniIndex,
           items: [
-            const BottomNavigationBarItem(icon: Icon(CupertinoIcons.home),label: 'خانه'),
-            BottomNavigationBarItem(icon: Stack(
-              clipBehavior: Clip.none,
-              children: const [
-                Icon(CupertinoIcons.cart),
-                Positioned(
-                  right: -10,
-                  child: Badge(value: 1)),
-              ],
-            ),label: 'سبد خرید'),
-            const BottomNavigationBarItem(icon: Icon(CupertinoIcons.person),label: 'پروفایل'),
+            const BottomNavigationBarItem(
+                icon: Icon(CupertinoIcons.home), label: 'خانه'),
+            BottomNavigationBarItem(
+                icon: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    const Icon(CupertinoIcons.cart),
+                    Positioned(
+                      right: -10,
+                      child: ValueListenableBuilder<int>(
+                        valueListenable: CartRepository.cartItemCountNotifier,
+                        builder: (BuildContext context, value, Widget? child) {
+                          return Badge(value: value);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                label: 'سبد خرید'),
+            const BottomNavigationBarItem(
+                icon: Icon(CupertinoIcons.person), label: 'پروفایل'),
           ],
         ),
       ),

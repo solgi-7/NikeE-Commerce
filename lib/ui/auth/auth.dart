@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:seven_learn_nick/data/repo/auth_reposityory.dart';
+import 'package:seven_learn_nick/data/repo/cart_repository.dart';
 import 'package:seven_learn_nick/ui/auth/bloc/auth_bloc.dart';
 
 class AuthScreen extends StatefulWidget {
@@ -54,7 +55,7 @@ class _AuthScreenState extends State<AuthScreen> {
           backgroundColor: themeData.colorScheme.secondary,
           body: BlocProvider<AuthBloc>(
             create: (context) {
-              final bloc = AuthBloc(authRepository: authRepository);
+              final bloc = AuthBloc(authRepository: authRepository,cartRepository: cartRepository);
               bloc.stream.forEach((state) {
                 if (state is AuthSuccess) {
                   Navigator.of(context).pop();

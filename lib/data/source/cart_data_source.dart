@@ -5,6 +5,7 @@ import 'package:seven_learn_nick/data/source/cart_response.dart';
 abstract class ICartDataSource {
   Future<AddToCartRespose> add(int productId);
   Future<AddToCartRespose> changeCount(int cartItemId, int count);
+  Future<int> count();
   Future<void> delete(int cartItemId);
   Future<CartResponse> getAll();
 }
@@ -39,5 +40,11 @@ class CartRemoteDataSource implements ICartDataSource {
   Future<CartResponse> getAll() async {
     final response = await httpClient.get('cart/list');
     return CartResponse.fromJson(response.data);
+  }
+
+  @override
+  Future<int> count() async {
+    final response = await httpClient.get('cart/count');
+    return response.data['count'];
   }
 }

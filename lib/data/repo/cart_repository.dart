@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:seven_learn_nick/data/add_to_cart_response.dart';
 import 'package:seven_learn_nick/data/common/http_client.dart';
 import 'package:seven_learn_nick/data/source/cart_data_source.dart';
@@ -15,7 +16,7 @@ abstract class ICartRepository extends ICartDataSource {
 
 class CartRepository implements ICartRepository {
   final ICartDataSource dataSource;
-
+  static ValueNotifier<int> cartItemCountNotifier = ValueNotifier(0);
   CartRepository(this.dataSource);
 
   @override
@@ -33,4 +34,11 @@ class CartRepository implements ICartRepository {
 
   @override
   Future<CartResponse> getAll() => dataSource.getAll();
+
+  @override
+  Future<int> count() async {
+    final count = await dataSource.count();
+    cartItemCountNotifier.value = count ;
+    return count;
+  }
 }
