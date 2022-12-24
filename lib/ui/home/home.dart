@@ -1,4 +1,3 @@
-import 'package:seven_learn_nick/common/exceptions.dart';
 import 'package:seven_learn_nick/data/repo/product_repository.dart';
 import 'package:seven_learn_nick/data/repo/banner_repository.dart';
 import 'package:seven_learn_nick/data/product_entity.dart';

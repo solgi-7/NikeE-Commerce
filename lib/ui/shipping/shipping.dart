@@ -1,15 +1,15 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:seven_learn_nick/data/order.dart';
 import 'package:seven_learn_nick/data/repo/order_repository.dart';
 import 'package:seven_learn_nick/ui/cart/price_info.dart';
+import 'package:seven_learn_nick/ui/payment_webview.dart';
 import 'package:seven_learn_nick/ui/receipt/payment_receipt.dart';
 import 'package:seven_learn_nick/ui/shipping/bloc/shipping_bloc.dart';
 
 class ShippingScreen extends StatefulWidget {
-  ShippingScreen({
+  const ShippingScreen({
     Key? key,
     required this.payablePrice,
     required this.shippingCost,
@@ -56,8 +56,13 @@ class _ShippingScreenState extends State<ShippingScreen> {
               ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text(state.appException.message)));
             } else if (state is ShippingSuccess) {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const PaymentReceiptScreen()));
+              if (state.result.bankGetewayUrl.isNotEmpty){
+                 Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentGateWayScreen(backGatewayUrl: state.result.bankGetewayUrl,),));   
+              }else{
+                 Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => PaymentReceiptScreen(orderId: state.result.orderId,)));
+              }
+             
             }
           });
           return bloc;
@@ -116,14 +121,7 @@ class _ShippingScreenState extends State<ShippingScreen> {
                       : Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            ElevatedButton(
-                              onPressed: () {},
-                              child: const Text('پرداخت اینترنتی'),
-                            ),
-                            const SizedBox(
-                              width: 16,
-                            ),
-                            OutlinedButton(
+                              OutlinedButton(
                               onPressed: () {
                                 BlocProvider.of<ShippingBloc>(context).add(
                                   ShippingCreateOrder(
@@ -140,7 +138,27 @@ class _ShippingScreenState extends State<ShippingScreen> {
                               },
                               child: const Text('پرداخت در محل'),
                             ),
-                          ],
+                          const SizedBox(
+                              width: 16,
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                BlocProvider.of<ShippingBloc>(context).add(
+                                  ShippingCreateOrder(
+                                    CreateOrderParams(
+                                      firstNameController.text,
+                                      lastNameController.text,
+                                      phoneNumberController.text,
+                                      postalCodeController.text,
+                                      addressController.text,
+                                      PaymentMethod.online,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: const Text('پرداخت اینترنتی'),
+                            ),
+                            ],
                         );
                 },
               ),

@@ -17,7 +17,16 @@ class ProductEntity {
       : id = json['id'],
         title = json['title'],
         imageUrl = json['image'],
-        price = json['price'],
-        priviousPrice = json['previous_price'] ?? json['price'] + json['discount'],
+        price = json['previous_price'] == null ? json['price'] - json['discount']: json['price'],
+        priviousPrice = json['previous_price'] ?? json['price'] ,
         discount = json['discount'];
 }
+
+//   ProductEntity.fromJson(Map<String, dynamic> json)
+//       : id = json['id'],
+//         title = json['title'],
+//         imageUrl = json['image'],
+//         price = json['price'],
+//         priviousPrice = json['previous_price'] ?? json['price'] + json['discount'],
+//         discount = json['discount'];
+// }

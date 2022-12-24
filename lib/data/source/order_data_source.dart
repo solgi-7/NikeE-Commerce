@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:seven_learn_nick/data/order.dart';
+import 'package:seven_learn_nick/data/payment_receipt.dart';
 
 abstract class IOrderDataSource {
   Future<CreateOrderResult> create(CreateOrderParams params);
+  Future<PaymentReceiptData> getPaymentReceipt(int orderId);
 }
 
 class OrderRemoteDataSource implements IOrderDataSource {
@@ -24,5 +26,11 @@ class OrderRemoteDataSource implements IOrderDataSource {
     });
 
     return CreateOrderResult.fromJson(response.data);
+  }
+
+  @override
+  Future<PaymentReceiptData> getPaymentReceipt(int orderId) async {
+    final response = await httpClient.get('order/checkout?order_id=$orderId');
+    return PaymentReceiptData.fromJson(response.data);
   }
 }
