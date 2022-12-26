@@ -3,7 +3,15 @@ class ProductSort {
   static const popular = 1;
   static const priceHeighToLow = 2;
   static const priceLowToHeight = 3;
+  static const List<String> names = [
+    'جدیدترین',
+    'پربازدیدترین',
+    'قیمت نزولی',
+    'قیمت سعودی',
+  ];
+
 }
+
 
 class ProductEntity {
   final int id;

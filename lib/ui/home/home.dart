@@ -1,6 +1,7 @@
 import 'package:seven_learn_nick/data/repo/product_repository.dart';
 import 'package:seven_learn_nick/data/repo/banner_repository.dart';
 import 'package:seven_learn_nick/data/product_entity.dart';
+import 'package:seven_learn_nick/ui/list/list.dart';
 import 'package:seven_learn_nick/ui/product/product.dart';
 import 'package:seven_learn_nick/ui/widget/error.dart';
 import 'package:seven_learn_nick/ui/widget/slider.dart';
@@ -51,13 +52,21 @@ class HomeScreen extends StatelessWidget {
                         );
                       case 3:
                         return _HorizontalProductList(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => const ProductListScreen(
+                                    sort: ProductSort.latest)));
+                          },
                           products: state.latestProducts,
                           title: 'جدیدترین',
                         );
                       case 4:
                         return _HorizontalProductList(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => const ProductListScreen(
+                                    sort: ProductSort.popular)));
+                          },
                           products: state.popularProducts,
                           title: 'پربازدیدترین',
                         );
@@ -87,6 +96,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
+
 class _HorizontalProductList extends StatelessWidget {
   final String title;
   final GestureTapCallback onTap;

@@ -9,11 +9,14 @@ class ProductItem extends StatelessWidget {
   const ProductItem({
     Key? key,
     required this.product,
-    required this.borderRadius,
+    required this.borderRadius, this.itemWidth = 176, this.itemWheight = 189,
   }) : super(key: key);
 
   final ProductEntity product;
   final BorderRadius borderRadius;
+
+  final double itemWidth;
+  final double itemWheight;
   @override
   Widget build(BuildContext context) {
     return Directionality(
@@ -27,15 +30,14 @@ class ProductItem extends StatelessWidget {
                     product: product,
                   ))),
           child: SizedBox(
-            width: 176,
+            width: itemWidth,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Stack(
                   children: [
-                    SizedBox(
-                      height: 189,
-                      width: 176,
+                    AspectRatio(
+                      aspectRatio: 0.93,
                       child: ImageLoadingService(
                         imageUrl: product.imageUrl,
                         borderRadius: BorderRadius.circular(12.0),

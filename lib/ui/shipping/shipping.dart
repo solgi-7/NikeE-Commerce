@@ -57,14 +57,14 @@ class _ShippingScreenState extends State<ShippingScreen> {
                   SnackBar(content: Text(state.appException.message)));
             } else if (state is ShippingSuccess) {
               if (state.result.bankGetewayUrl.isNotEmpty){
-                 Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentGateWayScreen(backGatewayUrl: state.result.bankGetewayUrl,),));   
+                //  Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentGateWayScreen(backGatewayUrl: state.result.bankGetewayUrl,),));   
               }else{
                  Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => PaymentReceiptScreen(orderId: state.result.orderId,)));
               }
-             
             }
-          });
+          },
+          );
           return bloc;
         },
         child: SingleChildScrollView(
