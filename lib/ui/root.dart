@@ -6,6 +6,8 @@ import 'package:seven_learn_nick/ui/cart/cart.dart';
 import 'package:seven_learn_nick/ui/home/home.dart';
 import 'package:seven_learn_nick/ui/widget/badge.dart';
 
+import 'profile/profile_scrren.dart';
+
 const int homeIndex = 0;
 const int cartIndex = 1;
 const int profileIndex = 2;
@@ -64,20 +66,10 @@ class _RootScreenState extends State<RootScreen> {
             _navigator(_homeKey, homeIndex, const HomeScreen()),
             _navigator(_cartKey, cartIndex, const CartScreen()),
             _navigator(
-                _profileKey,
-                profileIndex,
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('Profile'),
-                    ElevatedButton(
-                        onPressed: () {
-                          CartRepository.cartItemCountNotifier.value = 0;
-                          authRepository.signOut();
-                        },
-                        child: const Text('Sign Out')),
-                  ],
-                )),
+              _profileKey,
+              profileIndex,
+              const ProfileScreen(),
+            ),
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
