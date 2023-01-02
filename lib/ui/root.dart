@@ -65,11 +65,7 @@ class _RootScreenState extends State<RootScreen> {
           children: [
             _navigator(_homeKey, homeIndex, const HomeScreen()),
             _navigator(_cartKey, cartIndex, const CartScreen()),
-            _navigator(
-              _profileKey,
-              profileIndex,
-              const ProfileScreen(),
-            ),
+            _navigator(_profileKey, profileIndex, const ProfileScreen()),
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
