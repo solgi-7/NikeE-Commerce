@@ -20,6 +20,12 @@ class AuthRepository implements IAuthRepository {
 
   AuthRepository(this.dataSource);
 
+  static bool isUserLoggedIn (){
+    return authChangeNotifier.value != null && 
+    authChangeNotifier.value!.accessToken != null &&
+    authChangeNotifier.value!.accessToken.isNotEmpty ;
+  }
+
   @override
   Future<void> login(String username, String password) async {
     final AuthInfo authInfo = await dataSource.login(username, password);

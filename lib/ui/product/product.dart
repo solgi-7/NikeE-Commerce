@@ -1,3 +1,4 @@
+import 'package:seven_learn_nick/data/favorite_manager.dart';
 import 'package:seven_learn_nick/data/product_entity.dart';
 import 'package:seven_learn_nick/ui/product/details.dart';
 import 'package:seven_learn_nick/ui/widget/image.dart';
@@ -5,11 +6,16 @@ import 'package:seven_learn_nick/common/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class ProductItem extends StatelessWidget {
+/// this type of create instans called lazy approche
+final favoriteManater = FavoriteManater();
+
+class ProductItem extends StatefulWidget {
   const ProductItem({
     Key? key,
     required this.product,
-    required this.borderRadius, this.itemWidth = 176, this.itemWheight = 189,
+    required this.borderRadius,
+    this.itemWidth = 176,
+    this.itemWheight = 189,
   }) : super(key: key);
 
   final ProductEntity product;
@@ -17,6 +23,12 @@ class ProductItem extends StatelessWidget {
 
   final double itemWidth;
   final double itemWheight;
+
+  @override
+  State<ProductItem> createState() => _ProductItemState();
+}
+
+class _ProductItemState extends State<ProductItem> {
   @override
   Widget build(BuildContext context) {
     return Directionality(
@@ -24,13 +36,13 @@ class ProductItem extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(4.0),
         child: InkWell(
-          borderRadius: borderRadius,
+          borderRadius: widget.borderRadius,
           onTap: () => Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => ProductDetailScreen(
-                    product: product,
+                    product: widget.product,
                   ))),
           child: SizedBox(
-            width: itemWidth,
+            width: widget.itemWidth,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -39,24 +51,36 @@ class ProductItem extends StatelessWidget {
                     AspectRatio(
                       aspectRatio: 0.93,
                       child: ImageLoadingService(
-                        imageUrl: product.imageUrl,
+                        imageUrl: widget.product.imageUrl,
                         borderRadius: BorderRadius.circular(12.0),
                       ),
                     ),
                     Positioned(
                       right: 8.0,
                       top: 8.0,
-                      child: Container(
-                        height: 32,
-                        width: 32,
-                        alignment: Alignment.center,
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          CupertinoIcons.heart,
-                          size: 20.0,
+                      child: InkWell(
+                        onTap: () {
+                          if (!favoriteManater.isFavorite(widget.product)) {
+                            favoriteManater.addFavprote(widget.product);
+                          }else{
+                            favoriteManater.delete(widget.product);
+                          }
+                          setState(() {
+                            //
+                          });
+                        },
+                        child: Container(
+                          height: 32,
+                          width: 32,
+                          alignment: Alignment.center,
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            favoriteManater.isFavorite(widget.product) ? CupertinoIcons.heart_fill :CupertinoIcons.heart,
+                            size: 20.0,
+                          ),
                         ),
                       ),
                     )
@@ -68,7 +92,7 @@ class ProductItem extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    product.title,
+                    widget.product.title,
                     textAlign: TextAlign.end,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -77,7 +101,7 @@ class ProductItem extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: Text(
-                    product.priviousPrice.withPriceLabel,
+                    widget.product.priviousPrice.withPriceLabel,
                     style: Theme.of(context)
                         .textTheme
                         .caption!
@@ -85,9 +109,10 @@ class ProductItem extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(right: 8.0, left: 8.0, top: 4.0),
+                  padding:
+                      const EdgeInsets.only(right: 8.0, left: 8.0, top: 4.0),
                   child: Text(
-                    product.price.withPriceLabel,
+                    widget.product.price.withPriceLabel,
                   ),
                 ),
               ],

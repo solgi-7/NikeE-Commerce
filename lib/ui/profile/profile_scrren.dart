@@ -4,6 +4,8 @@ import 'package:seven_learn_nick/data/auth_info.dart';
 import 'package:seven_learn_nick/data/repo/auth_reposityory.dart';
 import 'package:seven_learn_nick/data/repo/cart_repository.dart';
 import 'package:seven_learn_nick/ui/auth/auth.dart';
+import 'package:seven_learn_nick/ui/favorites/favorite_screen.dart';
+import 'package:seven_learn_nick/ui/order/order_history_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -50,7 +52,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   height: 1,
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const FavoriteListScreen()));
+                  },
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     height: 56,
@@ -69,7 +74,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   height: 1,
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const OrderHistoryScreen(),
+                      ),
+                    );
+                  },
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     height: 56,
@@ -104,7 +115,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 TextButton(
                                   onPressed: () {
                                     Navigator.pop(context);
-                                    CartRepository.cartItemCountNotifier.value = 0 ;
+                                    CartRepository.cartItemCountNotifier.value =
+                                        0;
                                     authRepository.signOut();
                                   },
                                   child: const Text('بله'),

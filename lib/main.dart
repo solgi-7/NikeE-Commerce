@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:seven_learn_nick/data/favorite_manager.dart';
 import 'package:seven_learn_nick/data/product_entity.dart';
 import 'package:seven_learn_nick/data/repo/auth_reposityory.dart';
 import 'package:seven_learn_nick/data/repo/banner_repository.dart';
@@ -6,7 +7,8 @@ import 'package:seven_learn_nick/data/repo/product_repository.dart';
 import 'package:seven_learn_nick/theme.dart';
 import 'package:seven_learn_nick/ui/root.dart';
 
-void main() {
+void main() async {
+  await FavoriteManater.init();
   WidgetsFlutterBinding.ensureInitialized();
   authRepository.loadAuthInfo();
   runApp(const MyApp());

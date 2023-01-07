@@ -9,6 +9,7 @@ import 'package:seven_learn_nick/data/repo/cart_repository.dart';
 import 'package:seven_learn_nick/theme.dart';
 import 'package:seven_learn_nick/ui/product/bloc/product_bloc.dart';
 import 'package:seven_learn_nick/ui/product/comment/comment_list.dart';
+import 'package:seven_learn_nick/ui/product/comment/insert/insert_commetn_dialog.dart';
 import 'package:seven_learn_nick/ui/widget/image.dart';
 
 class ProductDetailScreen extends StatefulWidget {
@@ -116,7 +117,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             Text('نظرات کاربران',
                                 style: Theme.of(context).textTheme.subtitle1),
                             TextButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                showModalBottomSheet(
+                                  context: context,
+                                  useRootNavigator: true,
+                                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
+                                  builder: (context){
+                                  return InsertCommentDialog(productId: widget.product.id ,scaffoldMessengerState: _scaffoldKey.currentState ,);
+                                });
+                              },
                               child: const Text('ثبت نظر'),
                             ),
                           ],

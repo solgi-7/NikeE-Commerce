@@ -1,3 +1,6 @@
+import 'package:hive_flutter/adapters.dart';
+part 'product_entity.g.dart';
+
 class ProductSort {
   static const latest = 0;
   static const popular = 1;
@@ -12,14 +15,21 @@ class ProductSort {
 
 }
 
-
+@HiveType(typeId: 0)
 class ProductEntity {
+  @HiveField(0)
   final int id;
+  @HiveField(1)
   final String title;
+  @HiveField(2)
   final String imageUrl;
+  @HiveField(3)
   final int price;
+  @HiveField(4)
   final int discount;
+  @HiveField(5)
   final int priviousPrice;
+  ProductEntity(this.discount,this.id,this.imageUrl,this.price,this.priviousPrice,this.title,);
 
   ProductEntity.fromJson(Map<String, dynamic> json)
       : id = json['id'],
