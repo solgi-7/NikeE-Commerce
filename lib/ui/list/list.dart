@@ -9,8 +9,11 @@ import 'package:seven_learn_nick/ui/list/bloc/product_list_bloc.dart';
 import 'package:seven_learn_nick/ui/product/product.dart';
 
 class ProductListScreen extends StatefulWidget {
-  const ProductListScreen({Key? key, required this.sort}) : super(key: key);
+  const ProductListScreen({Key? key, required this.sort}) : searchTerm = '' , super(key: key);
   final int sort;
+  final String searchTerm;
+
+  const ProductListScreen.search({Key? key , required this.searchTerm}) : sort = ProductSort.popular , super(key : key);
 
   @override
   State<ProductListScreen> createState() => _ProductListScreenState();
@@ -33,12 +36,13 @@ class _ProductListScreenState extends State<ProductListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('کفش های ورزشی'),
+        actions: const [SizedBox(width: 25,)],
+        title: Center(child: Text(widget.searchTerm.isEmpty ? 'کفش های ورزشی' : 'نتایج جستجو ${widget.searchTerm}',textAlign: TextAlign.center,),) ,
       ),
       body: BlocProvider<ProductListBloc>(
         create: (context) {
           bloc = ProductListBloc(productRepository)
-            ..add(ProductListStarted(widget.sort));
+            ..add(ProductListStarted(widget.sort,widget.searchTerm));
           return bloc!;
         },
         child: BlocBuilder<ProductListBloc, ProductListState>(
@@ -47,6 +51,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
               final products = state.products;
               return Column(
                 children: [
+                  if(widget.searchTerm.isEmpty)
                   Container(
                     height: 56,
                     decoration: BoxDecoration(
@@ -87,7 +92,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                                           return InkWell(
                                             onTap: () {
                                               bloc!.add(
-                                                  ProductListStarted(index));
+                                                  ProductListStarted(index,widget.searchTerm));
                                               Navigator.pop(context);
                                             },
                                             child: Padding(
@@ -177,7 +182,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                         ],
                       ),
                     ),
-                  ),
+                  ),              
                   Expanded(
                     child: GridView.builder(
                       gridDelegate:
@@ -197,6 +202,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   ),
                 ],
               );
+            } else if (state is ProductListEmpty){
+              return Center(child: Text(state.message),);
             } else {
               return const Center(child: CircularProgressIndicator());
             }

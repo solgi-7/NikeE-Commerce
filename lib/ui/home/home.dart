@@ -12,8 +12,8 @@ import 'package:flutter/material.dart';
 import 'bloc/home_bloc.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
-
+  HomeScreen({Key? key}) : super(key: key);
+  final TextEditingController _searchController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -37,14 +37,47 @@ class HomeScreen extends StatelessWidget {
                   itemBuilder: (BuildContext context, int index) {
                     switch (index) {
                       case 0:
-                        return Container(
-                          height: 56,
-                          alignment: Alignment.center,
-                          child: Image.asset(
-                            'assets/img/nike_logo.png',
-                            height: 32,
-                            fit: BoxFit.fitHeight,
-                          ),
+                        return Column(
+                          children: [
+                            Container(
+                              height: 56,
+                              alignment: Alignment.center,
+                              child: Image.asset(
+                                'assets/img/nike_logo.png',
+                                height: 32,
+                                fit: BoxFit.fitHeight,
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(
+                                  right: 12, left: 12, bottom: 12),
+                              height: 56,
+                              child: TextField(
+                                controller: _searchController,
+                                onSubmitted: (value) => _search(context),
+                                decoration: InputDecoration(
+                                  label: const Text('جستجو'),
+                                  isCollapsed: false,
+                                  prefixIcon: IconButton(
+                                    onPressed: () => _search(context),
+                                    icon: const Padding(
+                                      padding: EdgeInsets.only(right: 8.0),
+                                      child: Icon(CupertinoIcons.search),
+                                    ),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(28),
+                                    borderSide: BorderSide(color: Theme.of(context).dividerColor),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(28),
+                                  borderSide: BorderSide(color: Theme.of(context).colorScheme.primary,),),
+                                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                                ),
+                                textInputAction: TextInputAction.search,
+                                style: Theme.of(context).textTheme.bodyText2,
+                              ),
+                            )
+                          ],
                         );
                       case 2:
                         return BannerSlider(
@@ -94,6 +127,9 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+  void _search (BuildContext context) {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProductListScreen.search(searchTerm: _searchController.text)));
   }
 }
 

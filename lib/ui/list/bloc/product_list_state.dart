@@ -27,3 +27,10 @@ class ProductListError extends ProductListState {
   List<Object> get props => [exception];
 }
 
+class ProductListEmpty extends ProductListState {
+  final String message;
+
+  const ProductListEmpty(this.message);
+  @override
+  List<Object> get props => [message];
+}
